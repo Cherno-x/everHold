@@ -7,15 +7,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var methodValue int
+var methodValue string
 var addValue bool
 var nameValue string
+var payloadValue string
 
 func init() {
-	RootCmd.AddCommand(StartupCmd)
-	PersistCmd.PersistentFlags().intVar(&methodValue, "method", int, "choose method to add StartUp")
-	StartupCmd.PersistentFlags().BoolVar(&addValue, "add", true, "add payload or delete payload option, default true")
-	StartupCmd.PersistentFlags().StringVar(&nameValue, "name", "", "name add to StartUp menu")
+	RootCmd.AddCommand(PersistCmd)
+	PersistCmd.PersistentFlags().StringVar(&methodValue, "method","1", "choose method to add StartUp")
+	PersistCmd.PersistentFlags().StringVar(&nameValue, "name", "everHold", "name add to StartUp menu")
+	PersistCmd.PersistentFlags().BoolVar(&addValue, "add", true, "add payload or delete payload option, default true")
+	PersistCmd.PersistentFlags().StringVar(&payloadValue, "payload", "", "payload add to StartUp menu")
 }
 
 var RootCmd = &cobra.Command{
@@ -23,30 +25,16 @@ var RootCmd = &cobra.Command{
 	Short: "Windows Persistence Toolset",
 }
 
-var StartupCmd = &cobra.Command{
-	Use:   "StartUp",
-	Short: "add payload to StartUp menu",
-	Run: func(cmd *cobra.Command, args []string) {
-		payload := "C:\\Windows\\System32\\calc.exe"
-		add := true
-		name := "demo"
-		state := method.CallpersistStartup(payload, add, name)
-		if state {
-			tools.PrintSuccess(payload + "add to StartUp Success")
-		}
-	},
-}
-
 var PersistCmd = &cobra.Command{
-	Use:   "Persist",
+	Use:   "persist",
 	Short: "Windows Persistence via StartUp",
 	Run: func(cmd *cobra.Command, args []string) {
-		payload := "C:\\Windows\\System32\\calc.exe"
-		add := true
-		name := "demo"
-		state := method.CallpersistStartup(payload, add, name)
-		if state {
-			tools.PrintSuccess(payload + "add to StartUp Success")
+		if(methodValue=="1"){
+			state := method.CallpersistStartup(payloadValue, addValue, nameValue)
+			if state {
+				tools.PrintSuccess(payloadValue + " add to StartUp Success")
+			}
 		}
+		
 	},
 }
