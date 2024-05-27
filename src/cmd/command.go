@@ -14,7 +14,7 @@ var payloadValue string
 
 func init() {
 	RootCmd.AddCommand(PersistCmd)
-	PersistCmd.PersistentFlags().StringVar(&methodValue, "method", "1", "choose method to add StartUp")
+	PersistCmd.PersistentFlags().StringVar(&methodValue, "method", "1", "choose method")
 	PersistCmd.PersistentFlags().StringVar(&nameValue, "name", "everHold", "name add to StartUp menu")
 	PersistCmd.PersistentFlags().BoolVar(&addValue, "add", true, "add payload or delete payload option, default true")
 	PersistCmd.PersistentFlags().StringVar(&payloadValue, "payload", "", "payload add to StartUp menu")
@@ -27,10 +27,10 @@ var RootCmd = &cobra.Command{
 
 var PersistCmd = &cobra.Command{
 	Use:   "persist",
-	Short: "Windows Persistence via StartUp",
+	Short: "Windows Persistence",
 	Run: func(cmd *cobra.Command, args []string) {
 		if methodValue == "1" {
-			state := persist.CallpersistStartup(payloadValue, addValue, nameValue)
+			state := persist.Callmethod1(payloadValue, addValue, nameValue)
 			if state {
 				tools.PrintSuccess(payloadValue + " add to StartUp Success")
 			}

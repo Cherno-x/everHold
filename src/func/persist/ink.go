@@ -28,7 +28,7 @@ func getPayloadPath(payload string) (string, bool) {
 	return "", false
 }
 
-func persistStartup(payload string, name string, add bool) bool {
+func persistInkStartup(payload string, name string, add bool) bool {
 	appdata, err := getAppDataPath()
 	if err != nil {
 		tools.PrintError("Failed to get AppData path: " + err.Error())
@@ -75,7 +75,7 @@ func persistStartup(payload string, name string, add bool) bool {
 	}
 }
 
-func CallpersistStartup(payload string, add bool, name string) bool {
-	success := persistStartup(payload, name, add)
+func Callmethod1(payload string, add bool, name string) bool {
+	success := persistInkStartup(payload, name, add)
 	return success
 }
