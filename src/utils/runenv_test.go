@@ -1,13 +1,13 @@
-package tools_test
+package utils_test
 
 import (
-	"everHold/src/tools"
+	"everHold/src/utils"
 	"fmt"
 	"testing"
 )
 
 func TestUAC(t *testing.T) {
-	result, error := tools.GetCurrentUACLevel()
+	result, error := utils.GetCurrentUACLevel()
 	if error != nil {
 		t.Fatal(error)
 	}
@@ -15,7 +15,7 @@ func TestUAC(t *testing.T) {
 }
 
 func TestAdmin(t *testing.T) {
-	result, error := tools.IsUserAnAdmin()
+	result, error := utils.IsUserAnAdmin()
 	if error != nil {
 		t.Fatal(error)
 	}

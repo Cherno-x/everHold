@@ -1,7 +1,7 @@
 package detect
 
 import (
-	"everHold/src/tools"
+	"everHold/src/utils"
 	"fmt"
 	"testing"
 )
@@ -30,6 +30,6 @@ func TestHejing(t *testing.T) {
 	// 测试Add函数
 	hejingStatus := Check360hejing()
 	if hejingStatus == true {
-		tools.PrintSuccess("检测到核晶开启")
+		utils.PrintSuccess("检测到核晶开启")
 	}
 }

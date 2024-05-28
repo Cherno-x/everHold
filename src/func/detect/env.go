@@ -1,14 +1,14 @@
 package detect
 
 import (
-	"everHold/src/tools"
-
 	"fmt"
 	"os/exec"
 	"runtime"
 	"strings"
 	"syscall"
 	"unsafe"
+
+	"everHold/src/utils"
 
 	"github.com/StackExchange/wmi"
 )
@@ -51,7 +51,7 @@ var (
 func GetWindowVersion() (WINDOWSVERSION, error) {
 	plantform := runtime.GOOS
 	if plantform != "windows" {
-		tools.PrintError("非windows平台，功能不支持")
+		utils.PrintError("非windows平台，功能不支持")
 		return WINDOWSVERSION{}, fmt.Errorf("非Windows平台，功能不支持")
 	}
 
@@ -60,7 +60,7 @@ func GetWindowVersion() (WINDOWSVERSION, error) {
 
 	ret, _, err := procRtlGetVersion.Call(uintptr(unsafe.Pointer(&version)))
 	if ret != 0 {
-		tools.PrintError("无法获取 Windows 版本信息")
+		utils.PrintError("无法获取 Windows 版本信息")
 		return WINDOWSVERSION{}, fmt.Errorf("无法获取 Windows 版本信息: %v", err)
 	}
 
@@ -159,7 +159,7 @@ func Check360hejing() bool {
 	query := "SELECT Name, VirtualizationFirmwareEnabled FROM Win32_Processor"
 	err := wmi.Query(query, &processors)
 	if err != nil {
-		tools.PrintError("wmi执行失败")
+		utils.PrintError("wmi执行失败")
 	}
 
 	for _, processor := range processors {

