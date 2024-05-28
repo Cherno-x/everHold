@@ -1,6 +1,7 @@
 package persist
 
 import (
+	"everHold/src/conf"
 	"everHold/src/tools"
 	"fmt"
 	"os"
@@ -41,7 +42,7 @@ func persistInkStartup(payload string, name string, add bool) bool {
 		return false
 	}
 
-	startupFilePath := filepath.Join(startupDir, fmt.Sprintf("%s.com.url", name))
+	startupFilePath := filepath.Join(startupDir, fmt.Sprintf("%s.com", name))
 	if add {
 		payloadPath, valid := getPayloadPath(payload)
 		if valid {
@@ -75,7 +76,7 @@ func persistInkStartup(payload string, name string, add bool) bool {
 	}
 }
 
-func Callmethod1(payload string, add bool, name string) bool {
-	success := persistInkStartup(payload, name, add)
+func Callmethod1(newcmd *conf.RUNCMD) bool {
+	success := persistInkStartup(newcmd.PayloadValue, newcmd.NameValue, newcmd.AddValue)
 	return success
 }
