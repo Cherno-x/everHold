@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func Callmethod2(newcmd *conf.RUNCMD) {
+func Callmethod3(newcmd *conf.RUNCMD) {
 	isAdmin, err := utils.IsUserAnAdmin()
 	utils.PrintInfo("正在检查权限...")
 	if err != nil {
@@ -108,7 +108,7 @@ instance of __FilterToConsumerBinding
 		time.Sleep(5 * time.Second)
 		utils.PrintInfo("Cleaning up")
 		if err := os.Remove(mofPath); err != nil {
-			utils.PrintError("Unable to cleanup" + err.Error())
+			utils.PrintError("Unable to cleanup" + mofPath)
 			return
 		}
 		utils.PrintSuccess("Successfully cleaned up")
