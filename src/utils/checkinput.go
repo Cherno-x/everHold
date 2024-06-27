@@ -24,3 +24,4 @@ func CheckExe(payload []string) (bool, string) {
 	}
 	return false, ""
 }
+

@@ -13,7 +13,6 @@ var newcmd conf.RUNCMD
 func init() {
 
 	RootCmd.AddCommand(PersistCmd)
-	RootCmd.AddCommand(InjectCmd)
 	PersistCmd.PersistentFlags().StringVar(&newcmd.MethodValue, "method", "1", "choose method")
 	PersistCmd.PersistentFlags().StringVar(&newcmd.NameValue, "name", "everHold", "name add to StartUp menu")
 	PersistCmd.PersistentFlags().BoolVar(&newcmd.AddValue, "add", true, "add payload or delete payload option, default true")
@@ -38,21 +37,8 @@ var PersistCmd = &cobra.Command{
 
 		} else if newcmd.MethodValue == "2" {
 			persist.Callmethod2(&newcmd)
-		}
-
-	},
-}
-
-var InjectCmd = &cobra.Command{
-	Use:   "inject",
-	Short: "Windows Process Injection",
-	Run: func(cmd *cobra.Command, args []string) {
-		newcmd.ModuleValue = "inject"
-		if newcmd.MethodValue == "1" {
-			state := persist.Callmethod1(&newcmd)
-			if state {
-				utils.PrintSuccess(newcmd.PayloadValue + " add to StartUp Success")
-			}
+		} else if newcmd.MethodValue == "3" {
+			persist.Callmethod3(&newcmd)
 		}
 
 	},
